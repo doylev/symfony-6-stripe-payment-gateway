@@ -33,10 +33,10 @@ class StripeController extends AbstractController
                     'quantity' => '1',
                 ],
             ],
-            'cancel_url' => 'https://test',
+            'cancel_url' => 'https://test/index2',
             'customer' => 'cus_N4xF6rjfxphy6F',
             'mode' => 'subscription',
-            'success_url' => 'https://test',
+            'success_url' => 'https://test/index2',
         ]);
 //        dd($checkoutSession);
         return $this->redirect($checkoutSession->url);

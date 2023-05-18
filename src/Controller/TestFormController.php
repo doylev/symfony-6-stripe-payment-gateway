@@ -2,44 +2,51 @@
 
 namespace App\Controller;
 
+use App\Service\BubbleService;
 use App\Service\CognitoClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Stripe;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TestFormController extends AbstractController
 {
-    #[Route('/test', name: 'app_test')]
-    public function default(BubbleController $bubbleController): Response
+
+    private BubbleService $bubbleService;
+
+    public function __construct(BubbleService $bubbleService)
     {
-        return $this->render('test_form/index.html.twig', [
-            'controller_name' => 'TestFormController',
-        ]);
-
+        $this->bubbleService = $bubbleService;
     }
-
-//    #[Route('/cognito', name: 'app_test')]
+    
+    //    #[Route('/cognito', name: 'app_test')]
 //    public function cognito(CognitoClient $cognitoClient): Response
 //    {
 //        $cognitoClient->GetCognitoClient();
 //        return $this->render('test_form/index.html.twig', [
-//            'controller_name' => 'TestFormController',
+//            'service_name' => 'TestFormService',
 //        ]);
 //
 //    }
 
+    #[Route('/test/index2', name: 'app_test_info')]
+    public function index2(): Response
+    {
+        return $this->render('test_form/index2.html.twig', [
+            'service_name' => 'TestFormService',
+        ]);
+    }
+
     #[Route('/test/form', name: 'app_test_form')]
-    public function index(BubbleController $bubbleController): Response
+    public function index(BubbleService $bubbleService): Response
     {
         $saleId = '1683482460049x843612956917497900';
 
-//        $bubbleController->getAllUsers();
-//          $user = $bubbleController->getUserById('1669997103592x427232129968259500');
-        $saleObj = $bubbleController->getSalesById($saleId);
+        $saleObj = $this->bubbleService->getSalesById($saleId);
         $subscriberId = $saleObj["User Subscriber"];
 //          dd($subscriberId);
-        $subscriberObj = $bubbleController->getSubscriberById($subscriberId);
+        $subscriberObj = $bubbleService->getSubscriberById($subscriberId);
         dd($subscriberObj);
 //
 //        Stripe\Stripe::setApiKey($_ENV["STRIPE_SECRET"]);
@@ -57,7 +64,7 @@ class TestFormController extends AbstractController
 //        $setupintent = $setupintent->cancel();
 //        dd($setupintent);
         return $this->render('test_form/index.html.twig', [
-            'controller_name' => 'TestFormController',
+            'service_name' => 'TestFormService',
             'saleObj' => $saleObj,
         ]);
     }
