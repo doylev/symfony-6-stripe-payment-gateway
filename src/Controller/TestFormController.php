@@ -34,7 +34,7 @@ class TestFormController extends AbstractController
     public function index2(): Response
     {
         return $this->render('test_form/index2.html.twig', [
-            'service_name' => 'TestFormService',
+            'controller_name' => 'TestFormController',
         ]);
     }
 

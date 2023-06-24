@@ -13,8 +13,15 @@ class StripeController extends AbstractController
     #[Route('/stripe', name: 'app_stripe', methods: ['GET'])]
     public function index(): Response
     {
+        Stripe\Stripe::setApiKey($_ENV["STRIPE_SECRET"]);
+
+        $stripePaymentIntent = new \Stripe\PaymentIntent([
+            'amount' => 500,
+            'currency' => 'usd',
+        ])
         return $this->render('stripe/index.html.twig', [
             'stripe_key' => $_ENV["STRIPE_KEY"],
+            'client_secret' => $stripePaymentIntent->client_secret,
         ]);
     }
 
@@ -38,13 +45,14 @@ class StripeController extends AbstractController
             'mode' => 'subscription',
             'success_url' => 'https://test/index2',
         ]);
-//        dd($checkoutSession);
+        dd($checkoutSession);
         return $this->redirect($checkoutSession->url);
     }
 
     #[Route('/stripe/create-charge', name: 'app_stripe_charge', methods: ['POST'])]
     public function createCharge(Request $request)
     {
+        dd('In createCharge');
         Stripe\Stripe::setApiKey($_ENV["STRIPE_SECRET"]);
         Stripe\Charge::create([
             "amount" => 5 * 100,
